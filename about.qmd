@@ -1,0 +1,14 @@
+---
+title: "About"
+image: Recycle.png
+about:
+  template: jolla
+  links:
+    - icon: github
+      text: Github
+      href: https://github.com
+---
+
+I use R for my analyses.  I will usually include code used in the posts.  The code is hidden.  If you wish to see the code, click the "Show Code" and it will appear.  
+
+

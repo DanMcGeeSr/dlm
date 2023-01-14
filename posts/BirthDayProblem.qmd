@@ -1,0 +1,204 @@
+---
+title: "Simulating Some Problems in Probability"
+format: html
+author: dlm3
+date: "2023-01-13"
+---
+
+
+
+Simulation to establish probability is nothing new.   Consider the flipping of a coin. Using the frequentest definition, we can say:
+
+$\Pr(\hbox{Heads}) = \frac{1}{2}$. 
+
+But is it really?  
+
+One way to find out would be to flip a coin a large of times, keeping track of whether each flip is heads or tails.  After flipping the coin a lot of times we just calculate the proportion of times the flips resulted in heads: $\Pr(\hbox{Heads}) = \frac{\hbox{Number Heads}}{\hbox{Number Flips}}$.  This experiment has often been conducted.  The results obtained by some famous coin flippers are given in the following table.
+
+```{r coinflip,echo=TRUE,message=FALSE}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+dt1 <- tibble(Flipper = character(),
+              Flips = numeric(),
+              Heads = numeric())
+
+dt1[1,] <-  list("Count Buffon (1707-1788)",4040,2048)
+dt1[2,] <-  list("Karl Pearson (1857–1936)", 24000, 12012)
+dt1[3,] <-  list("John Kerrich (1903–1985)", 10000, 5067)
+
+
+
+dt1  <-  dt1 %>% 
+  mutate(Heads_pc = Heads/Flips)
+
+kbl(dt1, caption="Famous Coin Flippers",align = "c") %>%
+  kable_classic(c("striped", "hover"),full_width = F) %>% 
+  footnote(general = "Count Buffon was a French Naturalist and Mathematician.  Karl Pearson was a British Statistican.  Many statistical result carry his name. John Kerrich was a Danish Mathematician.  He conducted his experiment while interned by the nazis in WWII ")
+```
+
+Conducting such an experiment is rather tedious.  Today most of us would flip the coin on a computer.
+
+All simulation starts with a random number generator. Random number generators are a formula that given the present number calculates the next number in a sequence. This is a bit counter intuitive since formulas are deterministic not random.  However, the numbers produced appear to have the properties of a random sequence of numbers. Hence, the generated sequences are technically called **pseudo-random numbers**.  Often the **pseudo** is omitted when random number generators are discussed. The number that that starts the sequence is called the *seed*.  
+
+It is fairly easy to draw random samples in R. The sample function in R allows us to define the sample space $S$ and draw random samples from it.  
+
+```{r  echo=TRUE,message=FALSE}
+
+
+library(knitr)
+# specify the seed, i.e. starting point of the random sequence.
+set.seed(12348765)
+#   create the set to be randomly sampled.
+head = c('Tails','Heads')
+# the default for the sample() function is sampling without replacement
+Result <- sample(head,10,replace=TRUE) 
+Result
+```
+Note that if I run that code again, I get a different series of outcomes.
+
+```{r, echo=TRUE,message=FALSE}
+
+
+library(knitr)
+
+#   create the set to be randomly sampled.
+head = c('Tails','Heads')
+# the default for the sample() function is sampling without replacement
+Result <- sample(head,10,replace=TRUE) 
+Result
+```
+
+If I run the code yet again, but set the seed to the same value as the first time, the same results are obtained.  
+
+```{r, echo=TRUE,message=FALSE}
+
+
+library(knitr)
+set.seed(12348765)
+#   create a list of possible outcomes.
+head = c('Tails','Heads')
+# the default for the sample() function is sampling without replacement
+Result <- sample(head,10,replace=TRUE)
+Result
+```
+
+
+__This is why it is usually a good idea to set the seed__.  In that way, you can always reproduce the original simulation.
+
+So, lets do some coin flipping.  Lets examine the effect of sample size on our estimate by doing several simulations and varying the number of flips in each simulation.
+
+```{r     echo=TRUE,message=FALSE}
+
+library(tidyverse)
+library(knitr)
+options(scipen = 100, digits = 4)  #suppress scientific notation
+set.seed(87654)
+head = c(0,1)  # 0 is tails, 1 is heads
+sampsize = c(1000,10000,100000,1000000,10000000)
+df <- data.frame(Flips = double(), Results=numeric())
+for (n in 1:5){
+t <- sample(head,sampsize[n],replace=TRUE) 
+df[n,]=c(format(sampsize[n],big.mark=","),sum(t)/sampsize[n])
+}
+kable(df, format = "html", caption="Simulated Coin Flips") %>%
+  kableExtra::kable_styling()
+```
+---
+title: "The Birthdays Problem"
+author: "dlm1"
+date: "2023-01-14"
+
+
+How many people have to be a room for the probability that at least two of them
+have the same birthday to be at least $\frac{1}{2}$?
+
+Again, for this problem the answer is non-intuitive.  It only requires 23 people.
+
+#### First, let's simulate the answer (23) to check that it's true.
+
+To do this, I simulate 10,000 random samples of size 23 from the 365 days in a year.  
+
+```{r birthday1, echo=TRUE, message=FALSE}
+set.seed(98767)
+days <- 1:365  #ignores leap years
+successes <- 0
+numsamps <- 10000
+for (i in 1:numsamps){
+s <- sample(days,23,replace = TRUE) # draw a sample of size 23
+n <- length(unique(s))
+successes <- successes + (n != 23)
+}
+print(paste0("Percent Success:  ",successes/numsamps*100,"%"))
+```
+
+To make sure this is the smallest number, simulate 22 as sample size.
+
+```{r birthday2, echo=TRUE, message=FALSE}
+
+set.seed(4576)
+days <- 1:365  #ignores leap years
+successes <- 0
+numsamps <- 10000
+for (i in 1:numsamps){
+s <- sample(days,22,replace = TRUE) # draw a sample of size 23
+n <- length(unique(s))
+successes <- successes + (n != 22)
+}
+print(paste0("Percent Success:  ",successes/numsamps*100,"%"))
+```
+
+
+### Now the analytic solution.
+
+Suppose people k people are in a  room what is the probability that at least two of them have the same birthday$?
+
+This is a common case where it is easier to calculate the probability of the compliment of what we are looking for.  That is we calculate: $\Pr(\hbox{All have different birthdays})$, then 
+
+$\Pr(\hbox{at least two have the same birthday})=1-Pr(\hbox{All have different birthdays})$.
+
+Recall: 
+$\Pr(\hbox{All have different birthdays})=\frac{\hbox{number of ways all are different}}{\hbox{ number of ways all have birthdays could occur}}$
+
+Suppose there are k people, then:
+
+number ways all have different birthdays $=365 \times 364 \times 363 \times \dots \times (365-k+1)$
+
+and
+
+number of ways all birthdays could occur = $365^k$
+
+So
+
+$\Pr(\hbox{All have different birthdays})=\frac{365 \times 364 \times 363 \times \dots \times (365-k+1)}{ 365^k}$
+
+and 
+
+$\Pr(\hbox{At least two have the same birthday})=1- \frac{365 \times 364 \times 363 \times \dots \times (365-k+1)}{ 365^k}$
+
+The following figure gives the results for 1 to 60 sample-size.
+
+```{r DrawProb, echo = TRUE, message=FALSE}
+
+library(tidyverse)
+library(highcharter)
+df <- tibble(Number = numeric(), 
+             Probability = numeric())
+df[1,] = list(1,0)
+probnone <- 1
+for  (k in 1:60){
+  probnone=probnone*(365-(k-1))/365;
+  probmatch=1-probnone;
+  df[k,] = list(k, probmatch)
+}	
+highchart(type = "chart") %>%
+  hc_add_series(data = df,
+                type = "line",
+                hcaes(x = Number,
+                      y = Probability)) %>% 
+  hc_title(text = "Probability that at least two people have the same birthday") %>% 
+  hc_xAxis(title = list(text = "Number of People")) %>%                        
+  hc_yAxis(title = list(text='Probability'))
+```

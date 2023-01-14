@@ -1,0 +1,19 @@
+---
+title: "A Bit of Probability"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: false
+---
+
+
+
+
+I will attempt to keep the posts reasonably short and focused on a single topic.
+
+
+
+
+
+
