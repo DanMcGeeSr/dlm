@@ -1,0 +1,138 @@
+---
+title: "Monte Hall Problem"
+author: "dlm3"
+date: "2023-01-14"
+---
+
+
+
+### The Monte Hall Problem. 
+
+There are numerous versions of this problem.  I use the version and solution presented by Steve Selvin in a letter to the American Statistician.  The full letter can be viewed on [JSTOR](https://www.jstor.org/stable/i326385)
+
+Monte Hall was the host of a television series called "Let's Make a Deal".  
+
+In the show Monte presents three boxes A, B, C.  One holds the keys to a new car, the others are empty.
+
+A contestant selects a box, say A.  Monte offers $100 cash for the box at which point the game would end.  The participant refuses.  Monte makes a couple more slightly larger cash offers that the contestant also refuses.
+
+Monte then opens one of the two remaining boxes.  It is empty.  So Monte points out that the chances are 50/50 that she has the box with the car keys and ups the ante offering the participant $1000.  Which the contestant also refuses.  At this point she has to decide whether she will keep the box she selected or with to the remain box that she didn't pick.  The question is which is the better __strategy__, to keep the chosen box or to switch.  The answer is that switching is better.  
+
+The probability of winning is \frac{2}{3}.  This can be seen  by enumerating the possible situations and the results (win or lose) for each.  The following table was presented in the Selvin letter.
+
+<table style="width:80%">
+ <thead>
+  <tr>
+   <th style="text-align:center;">Keys</th>
+   <th style="text-align:center;"> Chooses</th>
+   <th style="text-align:center;">Shows</th>
+   <th style="text-align:center;">Switches</th> 
+   <th style="text-align:center;">Result</th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> B or C </td>
+   <td style="text-align:center;"> A for B or C </td>
+   <td style="text-align:center;"> Loses </td>  
+  </tr>
+  <tr>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;">B for A </td>
+   <td style="text-align:center;"> Wins</td>  
+  </tr>
+   <tr>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;">C for A </td>
+   <td style="text-align:center;"> Wins</td>  
+  </tr>
+  
+  <tr>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> A for C</td>
+   <td style="text-align:center;"> Loses </td>  
+  </tr>
+  <tr>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> A or C </td>
+   <td style="text-align:center;">B for A or C </td>
+   <td style="text-align:center;"> Loses</td>  
+  </tr>
+   <tr>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;">B for A </td>
+   <td style="text-align:center;"> Wins</td>  
+  </tr>
+  
+  <tr>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> B for C</td>
+   <td style="text-align:center;"> Wins </td>  
+  </tr>
+  <tr>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> B </td>
+   <td style="text-align:center;"> A </td>
+   <td style="text-align:center;">B for C </td>
+   <td style="text-align:center;"> Wins</td>  
+  </tr>
+   <tr>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> C </td>
+   <td style="text-align:center;"> A or B </td>
+   <td style="text-align:center;">C for A or B </td>
+   <td style="text-align:center;"> Loses</td>  
+  </tr>
+</tbody>
+</table>
+
+The correct answer is clear from this table. So, why simulate?  
+
+Marilyn vos Savant gave the answer $\frac{2}{3}$ in her column "Ask Marilyn"  in Parade magazine in 1990.  The magazine received over 10,000 letters from readers. Many objected to the answer.  The particulars on this column as well as some of the published responses can be obtained at this [archive](https://web.archive.org/web/20100310140547/http://www.marilynvossavant.com/articles/gameshow.html).
+
+Paul Erdős considered the most prolific mathematicians in history only became convinced after reviewing a simulation. So let's do another.
+
+The simulation is quite easy.  The only time the contestant **doesn't win** is when they choose correctly the first time.
+
+So we do two simple steps.
+
+1.  Generate a random box for the keys
+
+2.  Generate a random box for the contestant's first choice.
+
+If the two are the same, the participant loses; otherwise the participant wins.
+
+__Note:__ It should be clear based on Selvin's table given above that if these are the same the contestant looses.  Otherwise, they win.
+
+```{r monte,echo=TRUE,message=FALSE}
+#| code-fold: true
+#| code-summary: "Show Code"
+
+set.seed(46108)
+numsim = 1000000
+wins <- 0
+S <- 1:3  # the sample space
+for (i in 1:numsim){
+c1 <- sample(S,1)
+c2 <- sample(S,1)
+wins <- wins + (c1 != c2)
+}
+
+wins_pc <- wins/numsim*100
+
+print(paste("Percentage Wins: ",wins_pc))
+```
+
