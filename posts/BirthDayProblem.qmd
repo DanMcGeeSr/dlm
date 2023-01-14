@@ -7,7 +7,7 @@ date: "2023-01-13"
 
 
 
-Simulation to establish probability is nothing new.   Consider the flipping of a coin. Using the frequentest definition, we can say:
+Simulation to establish probability is nothing new.   Consider the flipping of a coin. Using the frequentist definition, we can say:
 
 $\Pr(\hbox{Heads}) = \frac{1}{2}$. 
 
@@ -16,6 +16,7 @@ But is it really?
 One way to find out would be to flip a coin a large of times, keeping track of whether each flip is heads or tails.  After flipping the coin a lot of times we just calculate the proportion of times the flips resulted in heads: $\Pr(\hbox{Heads}) = \frac{\hbox{Number Heads}}{\hbox{Number Flips}}$.  This experiment has often been conducted.  The results obtained by some famous coin flippers are given in the following table.
 
 ```{r coinflip,echo=TRUE,message=FALSE}
+#| code-fold: true
 
 library(tidyverse)
 library(knitr)
@@ -46,6 +47,7 @@ All simulation starts with a random number generator. Random number generators a
 It is fairly easy to draw random samples in R. The sample function in R allows us to define the sample space $S$ and draw random samples from it.  
 
 ```{r  echo=TRUE,message=FALSE}
+#| code-fold: true
 
 
 library(knitr)
@@ -60,7 +62,7 @@ Result
 Note that if I run that code again, I get a different series of outcomes.
 
 ```{r, echo=TRUE,message=FALSE}
-
+#| code-fold: true
 
 library(knitr)
 
@@ -74,7 +76,7 @@ Result
 If I run the code yet again, but set the seed to the same value as the first time, the same results are obtained.  
 
 ```{r, echo=TRUE,message=FALSE}
-
+#| code-fold: true
 
 library(knitr)
 set.seed(12348765)
@@ -91,7 +93,7 @@ __This is why it is usually a good idea to set the seed__.  In that way, you can
 So, lets do some coin flipping.  Lets examine the effect of sample size on our estimate by doing several simulations and varying the number of flips in each simulation.
 
 ```{r     echo=TRUE,message=FALSE}
-
+#| code-fold: true
 library(tidyverse)
 library(knitr)
 options(scipen = 100, digits = 4)  #suppress scientific notation
@@ -122,6 +124,8 @@ Again, for this problem the answer is non-intuitive.  It only requires 23 people
 To do this, I simulate 10,000 random samples of size 23 from the 365 days in a year.  
 
 ```{r birthday1, echo=TRUE, message=FALSE}
+#| code-fold: true
+
 set.seed(98767)
 days <- 1:365  #ignores leap years
 successes <- 0
@@ -137,6 +141,7 @@ print(paste0("Percent Success:  ",successes/numsamps*100,"%"))
 To make sure this is the smallest number, simulate 22 as sample size.
 
 ```{r birthday2, echo=TRUE, message=FALSE}
+#| code-fold: true
 
 set.seed(4576)
 days <- 1:365  #ignores leap years
@@ -181,6 +186,7 @@ $\Pr(\hbox{At least two have the same birthday})=1- \frac{365 \times 364 \times 
 The following figure gives the results for 1 to 60 sample-size.
 
 ```{r DrawProb, echo = TRUE, message=FALSE}
+#| code-fold: true
 
 library(tidyverse)
 library(highcharter)

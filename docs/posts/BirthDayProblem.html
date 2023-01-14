@@ -9,7 +9,7 @@
 <meta name="author" content="dlm3">
 <meta name="dcterms.date" content="2023-01-13">
 
-<title>Random Thoughts - Simulating Some Problems in Probability</title>
+<title>A bit of probability - Simulating Some Problems in Probability</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -183,7 +183,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Random Thoughts</span>
+    <span class="navbar-title">A bit of probability</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -243,11 +243,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<p>Simulation to establish probability is nothing new. Consider the flipping of a coin. Using the frequentest definition, we can say:</p>
+<p>Simulation to establish probability is nothing new. Consider the flipping of a coin. Using the frequentist definition, we can say:</p>
 <p><span class="math inline">\(\Pr(\hbox{Heads}) = \frac{1}{2}\)</span>.</p>
 <p>But is it really?</p>
 <p>One way to find out would be to flip a coin a large of times, keeping track of whether each flip is heads or tails. After flipping the coin a lot of times we just calculate the proportion of times the flips resulted in heads: <span class="math inline">\(\Pr(\hbox{Heads}) = \frac{\hbox{Number Heads}}{\hbox{Number Flips}}\)</span>. This experiment has often been conducted. The results obtained by some famous coin flippers are given in the following table.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span>
@@ -268,6 +270,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">kbl</span>(dt1, <span class="at">caption=</span><span class="st">"Famous Coin Flippers"</span>,<span class="at">align =</span> <span class="st">"c"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_classic</span>(<span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>),<span class="at">full_width =</span> F) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">footnote</span>(<span class="at">general =</span> <span class="st">"Count Buffon was a French Naturalist and Mathematician.  Karl Pearson was a British Statistican.  Many statistical result carry his name. John Kerrich was a Danish Mathematician.  He conducted his experiment while interned by the nazis in WWII "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 
 <table class=" lightable-classic lightable-striped lightable-hover" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;">
@@ -313,6 +316,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>All simulation starts with a random number generator. Random number generators are a formula that given the present number calculates the next number in a sequence. This is a bit counter intuitive since formulas are deterministic not random. However, the numbers produced appear to have the properties of a random sequence of numbers. Hence, the generated sequences are technically called <strong>pseudo-random numbers</strong>. Often the <strong>pseudo</strong> is omitted when random number generators are discussed. The number that that starts the sequence is called the <em>seed</em>.</p>
 <p>It is fairly easy to draw random samples in R. The sample function in R allows us to define the sample space <span class="math inline">\(S\)</span> and draw random samples from it.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># specify the seed, i.e. starting point of the random sequence.</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12348765</span>)</span>
@@ -321,6 +326,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># the default for the sample() function is sampling without replacement</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Result <span class="ot">&lt;-</span> <span class="fu">sample</span>(head,<span class="dv">10</span>,<span class="at">replace=</span><span class="cn">TRUE</span>) </span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Tails" "Tails" "Heads" "Tails" "Tails" "Tails" "Heads" "Tails" "Heads"
 [10] "Tails"</code></pre>
@@ -328,6 +334,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Note that if I run that code again, I get a different series of outcomes.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   create the set to be randomly sampled.</span></span>
@@ -335,6 +343,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the default for the sample() function is sampling without replacement</span></span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>Result <span class="ot">&lt;-</span> <span class="fu">sample</span>(head,<span class="dv">10</span>,<span class="at">replace=</span><span class="cn">TRUE</span>) </span>
 <span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Tails" "Heads" "Tails" "Heads" "Heads" "Tails" "Heads" "Heads" "Heads"
 [10] "Tails"</code></pre>
@@ -342,6 +351,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>If I run the code yet again, but set the seed to the same value as the first time, the same results are obtained.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12348765</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#   create a list of possible outcomes.</span></span>
@@ -349,6 +360,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># the default for the sample() function is sampling without replacement</span></span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>Result <span class="ot">&lt;-</span> <span class="fu">sample</span>(head,<span class="dv">10</span>,<span class="at">replace=</span><span class="cn">TRUE</span>)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>Result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "Tails" "Tails" "Heads" "Tails" "Tails" "Tails" "Heads" "Tails" "Heads"
 [10] "Tails"</code></pre>
@@ -357,6 +369,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><strong>This is why it is usually a good idea to set the seed</strong>. In that way, you can always reproduce the original simulation.</p>
 <p>So, lets do some coin flipping. Lets examine the effect of sample size on our estimate by doing several simulations and varying the number of flips in each simulation.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen =</span> <span class="dv">100</span>, <span class="at">digits =</span> <span class="dv">4</span>)  <span class="co">#suppress scientific notation</span></span>
@@ -370,6 +384,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(df, <span class="at">format =</span> <span class="st">"html"</span>, <span class="at">caption=</span><span class="st">"Simulated Coin Flips"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 
 <table class="table" style="margin-left: auto; margin-right: auto;">
@@ -414,6 +429,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h4 class="anchored" data-anchor-id="first-lets-simulate-the-answer-23-to-check-that-its-true.">First, let’s simulate the answer (23) to check that it’s true.</h4>
 <p>To do this, I simulate 10,000 random samples of size 23 from the 365 days in a year.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">98767</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">365</span>  <span class="co">#ignores leap years</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>successes <span class="ot">&lt;-</span> <span class="dv">0</span></span>
@@ -424,12 +441,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>successes <span class="ot">&lt;-</span> successes <span class="sc">+</span> (n <span class="sc">!=</span> <span class="dv">23</span>)</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Percent Success:  "</span>,successes<span class="sc">/</span>numsamps<span class="sc">*</span><span class="dv">100</span>,<span class="st">"%"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Percent Success:  50.76%"</code></pre>
 </div>
 </div>
 <p>To make sure this is the smallest number, simulate 22 as sample size.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">4576</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>days <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">365</span>  <span class="co">#ignores leap years</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>successes <span class="ot">&lt;-</span> <span class="dv">0</span></span>
@@ -440,6 +460,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>successes <span class="ot">&lt;-</span> successes <span class="sc">+</span> (n <span class="sc">!=</span> <span class="dv">22</span>)</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"Percent Success:  "</span>,successes<span class="sc">/</span>numsamps<span class="sc">*</span><span class="dv">100</span>,<span class="st">"%"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Percent Success:  47.53%"</code></pre>
 </div>
@@ -461,6 +482,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p><span class="math inline">\(\Pr(\hbox{At least two have the same birthday})=1- \frac{365 \times 364 \times 363 \times \dots \times (365-k+1)}{ 365^k}\)</span></p>
 <p>The following figure gives the results for 1 to 60 sample-size.</p>
 <div class="cell">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(highcharter)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">Number =</span> <span class="fu">numeric</span>(), </span>
@@ -480,6 +503,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_title</span>(<span class="at">text =</span> <span class="st">"Probability that at least two people have the same birthday"</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_xAxis</span>(<span class="at">title =</span> <span class="fu">list</span>(<span class="at">text =</span> <span class="st">"Number of People"</span>)) <span class="sc">%&gt;%</span>                        </span>
 <span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">hc_yAxis</span>(<span class="at">title =</span> <span class="fu">list</span>(<span class="at">text=</span><span class="st">'Probability'</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 
 <div class="highchart html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-29b12864652b54dfefaa" style="width:100%;height:464px;"></div>
